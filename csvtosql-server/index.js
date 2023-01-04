@@ -51,6 +51,9 @@ router.get('/', function (req, res, next) {
 
 router.post('/api/csv-upload', async (req, res) => {
     const { csvData } = req.body;
+    if (csvData.length < 1 || !csvData) {
+        return;
+    }
     try {
         const created = await users.bulkCreate(csvData)
         if (created) {

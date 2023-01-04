@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { Flatfile } from '@flatfile/sdk';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 function App() {
-  let [csvData, setCsvData] = useState([])
+  let [csvData, setCsvData] = useState([]);
+  let [tmpCsv, setTmpCsv] = useState([]);
   const importfile = () => {
     console.log("file imported")
     Flatfile.requestDataFromUser({
@@ -12,6 +16,7 @@ function App() {
         console.log("chunks ====>> ", chunks)
         for (let i = 0; i < chunks.records.length; i++) {
           setCsvData(oldData => [...oldData, chunks.records[i].data])
+          setTmpCsv(oldData => [...oldData, chunks.records[i].data])
         }
         next()
       },
@@ -23,26 +28,36 @@ function App() {
       }
     })
   }
+  const columnDefs = [
+    { field: 'firstName' },
+    { field: 'lastName' },
+    { field: 'age' }
+  ];
+
+  const rowData = csvData;
+
+
   useEffect(() => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ csvData })
+      body: JSON.stringify({ tmpCsv })
     };
-    if (csvData.length > 0) {
-      const fetchData = async () => {
-        try {
-          await fetch('url', requestOptions)
-            .then(response => response.json())
-            .then(data => console.log(data));
-        } catch (err) {
-          console.log("something went wrong ", err)
-        }
+    const fetchData = async () => {
+      try {
+        await fetch('url', requestOptions)
+          .then(response => response.json())
+          .then(data => {
+            setTmpCsv([]);
+            console.log("data ", data)
+          });
+      } catch (err) {
+        console.log("something went wrong ", err)
       }
-      fetchData();
     }
+    fetchData();
 
-  }, [csvData])
+  }, [tmpCsv])
   return (
     <div className="App">
       <div className='header-container'>
@@ -53,7 +68,15 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='csvTable'>
+      <div className='csvTable-conatiner'>
+        <div className='csvTable'>
+          <p className='heading'>Uploaded CSV</p>
+          <div className="ag-theme-alpine" style={{ width: 500, height: 500 }}>
+            <AgGridReact
+              rowData={rowData} columnDefs={columnDefs}
+            />
+          </div>
+        </div>
 
       </div>
     </div>
