@@ -13,10 +13,9 @@ app.use(
 );
 app.use(logger('dev'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-
+const PORT = process.env.PORT || 3001;
 
 const sequelize = new Sequelize('csvtomysql', 'root', 'password', {
     host: 'localhost',
@@ -70,6 +69,6 @@ router.post('/api/csv-upload', async (req, res) => {
 })
 app.use(router);
 
-app.listen(3001, () => {
-    console.log("server running on 3001")
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`)
 })
