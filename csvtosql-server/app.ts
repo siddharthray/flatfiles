@@ -1,9 +1,9 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const logger = require('morgan');
-const { Sequelize } = require('sequelize');
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import { Sequelize, DataTypes } from 'sequelize';
 
+const app = express();
 const router = express.Router();
 app.use(
     cors({
@@ -11,7 +11,7 @@ app.use(
         credentials: true,
     })
 );
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -34,16 +34,16 @@ start();
 
 const users = sequelize.define('users', {
     id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    firstName: Sequelize.STRING,
-    lastName: Sequelize.STRING,
-    age: Sequelize.INTEGER
+    firstName: DataTypes.STRING,
+    lastName: DataTypes.STRING,
+    age: DataTypes.INTEGER
 });
 
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     console.log("Router Working");
     res.end();
 })
