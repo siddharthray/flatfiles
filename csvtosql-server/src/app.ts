@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const PORT = process.env.PORT || 3001;
 
-const sequelize = new Sequelize('csvtomysql', 'root', 'password', {
+const sequelize = new Sequelize('csvtomysql', 'root', 'my$ql1221', {
     host: 'localhost',
     dialect: 'mysql'
 });
